@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)http://www.delimited.io/blog/2014/6/17/force-directed-graphs-in-d3 -->
+<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:article="http://ogp.me/ns/article" lang="en-US" class="squarespace-damask yui3-js-enabled js flexbox canvas canvastext webgl no-touch hashchange history draganddrop rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms no-csstransforms3d csstransitions video audio svg inlinesvg svgclippaths wf-futurapt-n4-active wf-proximanova-i3-active wf-proximanova-i6-active wf-proximanova-i7-active wf-proximanova-n3-active wf-proximanova-n4-active wf-proximanova-n6-active wf-proximanova-n7-active wf-active" itemscope="" itemtype="http://schema.org/Article" id="yui_3_17_2_1_1432800330463_200" style=""><div id="yui3-css-stamp" style="position: absolute !important; visibility: hidden !important"></div><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  
+  <!-- This is Squarespace. --><!-- steven-hall-7eoj -->
+<script charset="utf-8" id="yui_3_17_2_1_1432800330463_441" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/count.js"></script><link charset="utf-8" rel="stylesheet" id="yui_3_17_2_1_1432800330463_445" href="http://static.squarespace.com/universal/styles-compressed/dialog-303d677b310577d6dfa6cce1801a3d9d-min.css"><link charset="utf-8" rel="stylesheet" id="yui_3_17_2_1_1432800330463_446" href="http://static.squarespace.com/universal/styles-compressed/comments-fe14e137035a703871c94a80f6890b8f-min.css"><script charset="utf-8" id="yui_3_17_2_1_1432800330463_443" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/dialog-705d611daa87f39f574e-min.js"></script><script charset="utf-8" id="yui_3_17_2_1_1432800330463_444" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/comments-a5f8dcd045d844df2ef7-min.js"></script><script charset="utf-8" id="yui_3_17_2_1_1432800330463_555" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/embed.js"></script><script charset="utf-8" id="yui_3_17_2_1_1432800330463_583" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/widgets.js"></script><script charset="utf-8" id="yui_3_17_2_1_1432800330463_609" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/widgets.js"></script><!--<base href="">--><base href=".">
+<meta charset="utf-8">
+<title>Snark Hunting: Force Directed Graphs in D3 — delimited</title>
+<link rel="shortcut icon" type="image/x-icon" href="http://www.delimited.io/favicon.ico">
+<link rel="canonical" href="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/Snark Hunting_ Force Directed Graphs in D3 — delimited.html">
+<meta property="og:site_name" content="delimited">
+<meta property="og:title" content="Snark Hunting: Force Directed Graphs in D3">
+<meta property="og:latitude" content="34.06210470000001">
+<meta property="og:longitude" content="-118.33903520000001">
+<meta property="og:url" content="http://www.delimited.io/blog/2014/6/17/force-directed-graphs-in-d3">
+<meta property="og:type" content="article">
+<meta property="og:description" content="Is it possible to write a blog post that combines d3.js, pseudo-classical 
+JavaScript, graph theory, and Lewis Carroll?  Yes, THAT Lewis Carroll. The 
+one who wrote Alice in Wonderland.  We are going to try it here.  
+
+I thought I would mix in some fun historical trivia to keep it interesting 
+as we check out force directed graphs in D3.  In this post we are going to 
+develop a tool to load up, display, and manipulate multiple graphs for 
+exploration using the pseudo-classical pattern in JavaScript.  We&#39;ll add in 
+some useful features, a bit of style, and some cool animations to make a 
+finished product (see the examples below).">
+<meta property="og:image" content="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/?format=1000w">
+<meta itemprop="name" content="Snark Hunting: Force Directed Graphs in D3">
+<meta itemprop="url" content="http://www.delimited.io/blog/2014/6/17/force-directed-graphs-in-d3">
+<meta itemprop="description" content="Is it possible to write a blog post that combines d3.js, pseudo-classical 
+JavaScript, graph theory, and Lewis Carroll?  Yes, THAT Lewis Carroll. The 
+one who wrote Alice in Wonderland.  We are going to try it here.  
+
+I thought I would mix in some fun historical trivia to keep it interesting 
+as we check out force directed graphs in D3.  In this post we are going to 
+develop a tool to load up, display, and manipulate multiple graphs for 
+exploration using the pseudo-classical pattern in JavaScript.  We&#39;ll add in 
+some useful features, a bit of style, and some cool animations to make a 
+finished product (see the examples below).">
+<meta itemprop="thumbnailUrl" content="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/?format=1000w">
+<link rel="image_src" href="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/?format=1000w">
+<meta itemprop="image" content="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/?format=1000w">
+<meta name="twitter:title" content="Snark Hunting: Force Directed Graphs in D3">
+<meta name="twitter:image" content="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/?format=1000w">
+<meta name="twitter:url" content="http://www.delimited.io/blog/2014/6/17/force-directed-graphs-in-d3">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Is it possible to write a blog post that combines d3.js, pseudo-classical 
+JavaScript, graph theory, and Lewis Carroll?  Yes, THAT Lewis Carroll. The 
+one who wrote Alice in Wonderland.  We are going to try it here.  
+
+I thought I would mix in some fun historical trivia to keep it interesting 
+as we check out force directed graphs in D3.  In this post we are going to 
+develop a tool to load up, display, and manipulate multiple graphs for 
+exploration using the pseudo-classical pattern in JavaScript.  We&#39;ll add in 
+some useful features, a bit of style, and some cool animations to make a 
+finished product (see the examples below).">
+<meta name="description" content="Is it possible to write a blog post that combines d3.js, pseudo-classical 
+JavaScript, graph theory, and Lewis Carroll?  Yes, THAT Lewis Carroll. The 
+one who wrote Alice in Wonderland.  We are going to try it here.  
+
+I thought I would mix in some fun historical trivia to keep it interesting 
+as we check out force directed graphs in D3.  In this post we are going to 
+develop a tool to load up, display, and manipulate multiple graphs for 
+exploration using the pseudo-classical pattern in JavaScript.  We&#39;ll add in 
+some useful features, a bit of style, and some cool animations to make a 
+finished product (see the examples below).">
+<script type="text/javascript" async="" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/ga.js"></script><script type="text/javascript">SQUARESPACE_ROLLUPS = {};</script>
+<script>(function(rollups, name) { if (!rollups[name]) { rollups[name] = {}; } rollups[name].js = ["//static.squarespace.com/universal/scripts-compressed/common-4a49e3707e175cc005a7-min.js"]; })(SQUARESPACE_ROLLUPS, 'squarespace-common');</script>
+<script>(function(rollups, name) { if (!rollups[name]) { rollups[name] = {}; } rollups[name].js = ["//static.squarespace.com/universal/scripts-compressed/commerce-7034ac5a0675ed7ec4f8-min.js"]; })(SQUARESPACE_ROLLUPS, 'squarespace-commerce');</script>
+<script>(function(rollups, name) { if (!rollups[name]) { rollups[name] = {}; } rollups[name].css = ["//static.squarespace.com/universal/styles-compressed/commerce-adc49121ab1707584a93e45cadb0b6b9-min.css"]; })(SQUARESPACE_ROLLUPS, 'squarespace-commerce');</script>
+<script type="text/javascript" data-sqs-type="dynamic-assets-loader">(function() {(function(a){function d(a){-1!==a.indexOf(".js")?document.write('<script type="text/javascript" src="'+a+'" onerror="__dynamicAssetLoaderErrorLogger(this)">\x3c/script>'):document.write('<link rel="stylesheet" type="text/css" href="'+a+'" onerror="__dynamicAssetLoaderErrorLogger(this)" />')}try{if(window.top!=window&&window.top.Squarespace&&window.top.Squarespace.frameAvailable){window.top.Squarespace.frameAvailable(window,SQUARESPACE_ROLLUPS);return}}catch(e){console.error(e)}window.__dynamicAssetLoaderErrorLogger=
+function(a){var b=new XMLHttpRequest;b.open("GET","/api/rollups/error?path="+encodeURIComponent(a.src||a.href)+"&page="+encodeURIComponent(window.location.href),!0);b.send()};for(var c in a){if(a[c].js)for(var b=0;b<a[c].js.length;b++)d(a[c].js[b]);if(a[c].css)for(b=0;b<a[c].css.length;b++)d(a[c].css[b])}})(SQUARESPACE_ROLLUPS);
+})();</script><script type="text/javascript" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/common-4a49e3707e175cc005a7-min.js" onerror="__dynamicAssetLoaderErrorLogger(this)"></script><script type="text/javascript" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/commerce-7034ac5a0675ed7ec4f8-min.js" onerror="__dynamicAssetLoaderErrorLogger(this)"></script><link rel="stylesheet" type="text/css" href="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/commerce-adc49121ab1707584a93e45cadb0b6b9-min.css" onerror="__dynamicAssetLoaderErrorLogger(this)">
+<script type="text/javascript" data-sqs-type="imageloader">(function() {var SQUARESPACE_SIZES=[2500,1500,1E3,750,500,300,100],IMAGE_LOADING_CLASS="loading",ImageLoader=new function(){this.load=function(a,b){function c(a,b,c){var d=new Image;d.onload=b;d.onerror=c;d.src=a}a.getDOMNode&&(a=a.getDOMNode());var d=this._getDataFromNode(a,b),e=!(!d.dimensions||!d.dimensions.width||!d.dimensions.height),l=d.load+"";if("false"===l)return!1;var g=d.mode;if(e&&("fit"==g||"fill"==g)){g=a.parentNode;if(!g)return console.error("Not doing anything, parentNode not found."),!1;if(!this.refresh(a,
+b,g))return!1}var n=this._intendToLoad(a,d);if("string"==typeof n&&"viewport"!==l){var m=this.getUrl(n,d),d=a.getAttribute("data-image-resolution");a.getAttribute("src")!==m&&this.isValidResolution(n,d)&&(a.onload=function(){a.className=a.className.replace(IMAGE_LOADING_CLASS," ").trim();a.setAttribute("data-image-resolution",n)},!a.getAttribute("src")&&-1===a.className.indexOf(IMAGE_LOADING_CLASS)&&(a.className+=(a.className?" ":"")+IMAGE_LOADING_CLASS),!a.getAttribute("src")&&e?a.setAttribute("src",
+m):c(m,function(){e?a.setAttribute("src",m):(a.setAttribute("data-image-dimensions",this.width+"x"+this.height),ImageLoader.load(a,b))},function(){a.className=a.className.replace(IMAGE_LOADING_CLASS," ").trim();a.setAttribute("src",m)}));return!0}return n};this.refresh=function(a,b,c){a.getDOMNode&&(a=a.getDOMNode());c&&c.getDOMNode&&(c=c.getDOMNode());c=c||a.parentNode;if(!c)return console.error("Not doing anything, parentNode not found."),!1;var d=this._getDataFromNode(a,b),e=c.offsetWidth,l=c.offsetHeight;
+b=d.mode;if("none"!=b){var g=d.dimensions.width,n=d.dimensions.height,m=g/n,q=e/l;if(d.fixedRatio)"fill"==b&&q>m||"fit"==b&&q<m?(h=100,k=100*(q/m),r=(100-k)*d.focalPoint.y,p=0):(h=100*(m/q),k=100,r=0,p=(100-h)*d.focalPoint.x),a.style.top=r+"%",a.style.left=p+"%",a.style.width=h+"%",a.style.height=k+"%";else{var f;"fill"===b?f=m>q?l/n:e/g:"fit"===b&&(f=m<q?l/n:e/g);!d.stretch&&"fit"==b&&1<f&&(f=1);var h=Math.ceil(g*f),k=Math.ceil(n*f);if(0===h||0===k)return!1;var p,r;"fill"===b?(p=Math.min(Math.max(e/
+2-h*d.focalPoint.x,e-h),0),r=Math.min(Math.max(l/2-k*d.focalPoint.y,l-k),0)):"fit"===b&&(f=d.fitAlignment,p=f.left?0:f.right?e-h:h<e?(e-h)/2:0,r=f.top?0:f.bottom?l-k:k<l?(l-k)/2:0,"inline"==this._getStyle(a,"display")&&(a.style.fontSize="0px"),this._resetAlt(a,function(){h-=a.offsetHeight-a.clientHeight;k-=a.offsetWidth-a.clientWidth}));a.style.top=Math.ceil(r)+"px";a.style.left=Math.ceil(p)+"px";a.style.width=Math.ceil(h)+"px";a.style.height=Math.ceil(k)+"px"}p=this._getStyle(c,"position");a.style.position=
+"relative"==p?"absolute":"relative";if("fill"==b&&(b=this._getStyle(c,"overflow"),!b||"hidden"!=b))c.style.overflow="hidden";return!0}};this._intendToLoad=function(a,b){function c(c,d){"none"===b.mode&&(a.style.width=null,a.style.height=null);var e=parseFloat(a.getAttribute(c)),f=parseFloat(e);if(!f||isNaN(f))e=g._getStyle(a,c),f=parseFloat(e);if(!f||isNaN(f))e=g._getStyle(a,"max-"+c,"max"+(c.substr(0,1).toUpperCase()+c.substr(1))),f=parseFloat(e);if(0===d||e)switch(g._stringType(e)){case "percentage":d=
+parseInt(e,10)/100*l["offset"+c.substr(0,1).toUpperCase()+c.substr(1)];break;case "number":d=parseInt(e,10)}!f&&0!==d&&!a.getAttribute("src")&&(d=0);return d}b=b||this._getDataFromNode(a);if(!b.source)return!1;var d=a.offsetWidth,e=a.offsetHeight,l=a.parentNode,g=this;this._resetAlt(a,function(){d=c("width",d);e=c("height",e)});0===d&&0===e?(d=b.dimensions.width,e=b.dimensions.height):0===d?d=this.getDimensionForValue("width",e,b):0===e&&(e=this.getDimensionForValue("height",d,b));"viewport"===b.load&&
+(a.style.width=Math.floor(d)+"px",a.style.height=Math.floor(e)+"px");return this.getSquarespaceSize(d,e,b)};this._getDataFromNode=function(a,b){b=b||{};var c={focalPoint:{x:0.5,y:0.5},dimensions:{width:null,height:null},mode:"none",fitAlignment:{center:!0},load:"true",stretch:!0,fixedRatio:!1};if(b.focalPoint)c.focalPoint=b.focalPoint;else{var d=a.getAttribute("data-image-focal-point");if(d&&(d=d.split(","))&&2==d.length)c.focalPoint={x:parseFloat(d[0]),y:parseFloat(d[1])}}if(b.dimensions)c.dimensions=
+b.dimensions;else if((d=a.getAttribute("data-image-dimensions"))&&(d=d.split("x"))&&2==d.length)c.dimensions={width:parseInt(d[0],10),height:parseInt(d[1],10)};b.mode?c.mode=b.mode:a.parentNode&&(d=a.parentNode.className,-1!==d.indexOf("content-fill")?c.mode="fill":-1!==d.indexOf("content-fit")&&(c.mode="fit"));if("fit"===c.mode&&a.parentNode&&(d=b.fitAlignment||a.getAttribute("data-alignment")||a.parentNode.getAttribute("data-alignment")))c.fitAlignment={top:-1!==d.indexOf("top"),left:-1!==d.indexOf("left"),
+center:-1!==d.indexOf("center"),right:-1!==d.indexOf("right"),bottom:-1!==d.indexOf("bottom")};if(b.load)c.load=b.load;else if(d=a.getAttribute("data-load"))c.load=d;if("undefined"!==typeof b.stretch)c.stretch=b.stretch;else if(d=a.getAttribute("data-image-stretch"))c.stretch="true"===d?!0:!1;c.source=b.source?b.source:a.getAttribute("data-src");if(c.source&&(-1!==c.source.indexOf("squarespace.com")||-1!==c.source.indexOf("squarespace.net"))&&"http:"===c.source.substr(0,5)&&"https"===window.location.protocol.substr(0,
+5))c.source=c.source.replace("http://","https://");if(b.fixedRatio)c.fixedRatio=b.fixedRatio;else if(d=a.getAttribute("data-fixed-ratio"))c.fixedRatio="true"==d;return c};this._stringType=function(a){return"string"===typeof a&&-1!==a.indexOf("%")?"percentage":isNaN(parseInt(a,10))?NaN:"number"};this._getStyle=function(a,b,c){var d;a.currentStyle?d=a.currentStyle[c||b]:window.getComputedStyle&&(d=document.defaultView.getComputedStyle(a,null).getPropertyValue(b));return d};this._isVisible=function(a){a=
+a.getBoundingClientRect();return 0<=a.left&&0<=a.top||0<=a.bottom&&0<=a.right||0<=a.left&&0<=a.bottom||0<=a.right&&0<=a.top};this.getSquarespaceSize=function(a,b,c){a=Math.max(b/(c.dimensions.height/c.dimensions.width),a);"undefined"===typeof app&&"number"===typeof window.devicePixelRatio&&(a*=window.devicePixelRatio);for(b=1;b<SQUARESPACE_SIZES.length&&!(a>SQUARESPACE_SIZES[b]);b++);return SQUARESPACE_SIZES[b-1]+"w"};this.getDimensionForValue=function(a,b,c){var d=c.dimensions.width;c=c.dimensions.height;
+return"width"==a?d/c*b:"height"==a?c/d*b:NaN};this.getUrl=function(a,b){var c=b.source;return a&&("/"==c[0]||-1!=c.indexOf("squarespace.com")||-1!=c.indexOf("squarespace.net"))?(-1===c.indexOf("format="+a)&&(c=c+(-1!==c.indexOf("?")?"&":"?")+"format="+a),window.Static&&window.Static.IN_BACKEND&&-1===c.indexOf("storage=local")&&(c+="&storage=local"),c):b.source};this.isValidResolution=function(a,b){a=parseInt(a,10);b=parseInt(b,10);return isNaN(a)||isNaN(b)?!0:a>b};this._resetAlt=function(a,b){var c=
+a.getAttribute("alt"),d=c&&0<c.length&&!a.getAttribute("src");if(d){var e=a.style.display;a.removeAttribute("alt");a.style.display="none";a.offsetHeight+0;a.style.display=e}b.call(this);d&&a.setAttribute("alt",c)};this.bootstrap=function(){var a=document.images;if(0<a.length)for(var b=0,c=a.length;b<c;b++)((a[b].hasAttribute?a[b].hasAttribute("data-image"):a[b].attributes["data-image"])||(a[b].hasAttribute?a[b].hasAttribute("data-src"):a[b].attributes["data-src"]))&&"false"!==(a[b].getAttribute?a[b].getAttribute("data-load"):
+a[b].attributes["data-load"])+""&&ImageLoader.load(a[b])}};window.ImageLoader=ImageLoader;window.YUI&&YUI.add("squarespace-imageloader",function(a){});
+})();</script>
+<script>Static.SQUARESPACE_CONTEXT = {"facebookAppId":"314192535267336","rollups":{"squarespace-audio-player":{"css":"//static.squarespace.com/universal/styles-compressed/audio-player-76e4bfcc3f9830beb388bae2002fbe6c-min.css","js":"//static.squarespace.com/universal/scripts-compressed/audio-player-e02095c8e4bae1d09890-min.js"},"squarespace-calendar-block-renderer":{"css":"//static.squarespace.com/universal/styles-compressed/calendar-block-renderer-edb9ea58c015fca447b97a2948a5c589-min.css","js":"//static.squarespace.com/universal/scripts-compressed/calendar-block-renderer-8cc5319d576092f859ef-min.js"},"squarespace-chartjs-helpers":{"css":"//static.squarespace.com/universal/styles-compressed/chartjs-helpers-9935a41d63cf08ca108505d288c1712e-min.css","js":"//static.squarespace.com/universal/scripts-compressed/chartjs-helpers-925684c65de4c606dad2-min.js"},"squarespace-comments":{"css":"//static.squarespace.com/universal/styles-compressed/comments-fe14e137035a703871c94a80f6890b8f-min.css","js":"//static.squarespace.com/universal/scripts-compressed/comments-a5f8dcd045d844df2ef7-min.js"},"squarespace-dialog":{"css":"//static.squarespace.com/universal/styles-compressed/dialog-303d677b310577d6dfa6cce1801a3d9d-min.css","js":"//static.squarespace.com/universal/scripts-compressed/dialog-705d611daa87f39f574e-min.js"},"squarespace-events-collection":{"css":"//static.squarespace.com/universal/styles-compressed/events-collection-edb9ea58c015fca447b97a2948a5c589-min.css","js":"//static.squarespace.com/universal/scripts-compressed/events-collection-118283d2ec27ed35e21b-min.js"},"squarespace-pinterest":{"css":"//static.squarespace.com/universal/styles-compressed/pinterest-d41d8cd98f00b204e9800998ecf8427e-min.css","js":"//static.squarespace.com/universal/scripts-compressed/pinterest-8953e59b1154d2d37163-min.js"}},"pageType":50,"website":{"id":"5273d1fce4b06060b5e45101","identifier":"steven-hall-7eoj","contentModifiedOn":1431960494872,"cloneable":false,"siteStatus":{},"language":"en-US","timeZone":"America/Los_Angeles","machineTimeZoneOffset":-25200000,"timeZoneOffset":-25200000,"timeZoneAbbr":"PDT","siteTitle":"delimited","siteDescription":"<p>Delimited is the personal website of Steven Hall. Technology blogging, latest trends in data visualization, analysis and design.&nbsp; Technical articles for JavaScript developers and analysts.&nbsp; Contact page for prospective consulting clients looking to do cutting edge work in JavaScript and HTML5.</p>","location":{"mapZoom":12.0,"mapLat":37.7726402,"mapLng":-122.40991539999999,"markerLat":37.7726402,"markerLng":-122.40991539999999,"addressTitle":"Delimited Technologies","addressLine1":"","addressLine2":"San Francisco, CA, 94103","addressCountry":"United States"},"logoImageId":"54ceaa1de4b03a59e1143a05","shareButtonOptions":{"2":true,"6":true,"8":true,"3":true,"1":true,"5":true,"4":true,"7":true},"logoImageUrl":"//static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54ceaa1de4b03a59e1143a05/1431960494872/","authenticUrl":"http://www.delimited.io","baseUrl":"http://www.delimited.io","primaryDomain":"www.delimited.io","socialAccounts":[{"serviceId":4,"userId":"2155675704","userName":"DelimitedTech","screenname":"Delimited Tech","addedOn":1384220924212,"profileUrl":"https://twitter.com/DelimitedTech","iconUrl":"http://pbs.twimg.com/profile_images/378800000714241603/3821c329654b06a7a65d6eec34802bcf_normal.png","collectionId":"528188fce4b0f8aebbcbb7ad","iconEnabled":true,"serviceName":"twitter"}],"typekitId":"","statsMigrated":false,"imageMetadataProcessingEnabled":false},"websiteSettings":{"id":"5273d1fce4b06060b5e45102","websiteId":"5273d1fce4b06060b5e45101","type":"Business","subjects":[{"systemSubject":"tech"}],"country":"US","state":"CA","markdownMode":false,"simpleLikingEnabled":true,"mobileInfoBarSettings":{"isContactEmailEnabled":false,"isContactPhoneNumberEnabled":false,"isLocationEnabled":false,"isBusinessHoursEnabled":false},"lastAgreedTermsOfService":2,"defaultPostFormat":"%y/%m/%d/%t","commentLikesAllowed":true,"commentAnonAllowed":true,"commentThreaded":true,"commentApprovalRequired":false,"commentAvatarsOn":true,"commentSortType":2,"commentFlagThreshold":0,"commentFlagsAllowed":true,"commentEnableByDefault":true,"commentDisableAfterDaysDefault":0,"disqusShortname":"delimited","homepageTitleFormat":"%s","collectionTitleFormat":"%c \u2014 %s","itemTitleFormat":"%i \u2014 %s","commentsEnabled":true,"contactEmail":"info@delimited.io","allowSquarespacePromotion":true,"storeSettings":{"returnPolicy":null,"termsOfService":null,"privacyPolicy":null,"orderRefundedSubjectFormat":"%s: Order #%o Refunded","orderRefundedTitleFormat":"Order Refunded: #%o","expressCheckout":false,"useLightCart":false,"showNoteField":false,"currenciesSupported":["USD"],"defaultCurrency":"USD","selectedCurrency":"USD","measurementStandard":1,"showCustomCheckoutForm":false,"enableMailingListOptInByDefault":true,"stripeConnected":false,"isLive":false,"storeState":3},"useEscapeKeyToLogin":true,"ssBadgeType":1,"ssBadgePosition":4,"ssBadgeVisibility":1,"ssBadgeDevices":1},"websiteCloneable":false,"collection":{"title":"Blog","id":"5273dca2e4b01beaee41a2c9","fullUrl":"/blog/","publicCommentCount":0},"item":{"title":"Snark Hunting: Force Directed Graphs in D3","id":"53a08b45e4b017961ee149c7","fullUrl":"/blog/2014/6/17/force-directed-graphs-in-d3","publicCommentCount":0,"commentState":1,"recordType":1},"subscribed":false,"appDomain":"squarespace.com","secureDomain":"https://steven-hall-7eoj.squarespace.com","templateTweakable":true,"tweakJSON":{"TGutter":"3%","TMaxWidth":"300","TPerRow":"4","gallery-auto-play":"false","galleryPlaySpeed":"3","hide-thumbnail-titles":"false","outerPadding":"50px","pagePadding":"50px","product-gallery-auto-crop":"false","product-image-auto-crop":"true","thumbnail-layout":"Basic Grid","topPadding":"10px"},"templateId":"4fd11f32c4aad9b01c9e624c","pageFeatures":[1,2,4],"impersonatedSession":false,"demoCollections":[{"collectionId":"522103cfe4b0b7a7884b30bd","deleted":true},{"collectionId":"4fd1028ee4b02be53c65dfc4","deleted":true},{"collectionId":"52152320e4b0212d398a4d4e","deleted":true},{"collectionId":"5220fdd3e4b0a04ed1106221","deleted":true},{"collectionId":"4fd1028ee4b02be53c65dfb9","deleted":true},{"collectionId":"5220fc11e4b0eaafa13b9d1d","deleted":true},{"collectionId":"5220fcd4e4b07d0760c6cc9f","deleted":true},{"collectionId":"5220fd71e4b0766e69c914ad","deleted":true},{"collectionId":"5220ff82e4b0c7e3fdb29039","deleted":true},{"collectionId":"52210040e4b0c7e3fdb29198","deleted":true},{"collectionId":"52210139e4b0c7e3fdb2938f","deleted":true},{"collectionId":"522101ace4b00d90384937d7","deleted":true},{"collectionId":"52210272e4b0e15dbd4ebcb3","deleted":true},{"collectionId":"522103dde4b08d991c65973e","deleted":true},{"collectionId":"5220fe45e4b0120ef55a7726","deleted":true},{"collectionId":"5220fec0e4b0c7e3fdb28eb8","deleted":true},{"collectionId":"5220ff0ee4b0304add8ebe6f","deleted":true},{"collectionId":"522102f1e4b05d551bae1fa6","deleted":true},{"collectionId":"5221037ee4b00d9038493b43","deleted":true}],"isFacebookTab":false,"tzData":{"zones":[[-480,"US","P%sT",null]],"rules":{"US":[[1967,2006,null,"Oct","lastSun","2:00","0","S"],[1987,2006,null,"Apr","Sun>=1","2:00","1:00","D"],[2007,"max",null,"Mar","Sun>=8","2:00","1:00","D"],[2007,"max",null,"Nov","Sun>=1","2:00","0","S"]]}}}; SquarespaceFonts.loadViaContext(); Squarespace.load(window); </script>
+
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://www.delimited.io/blog?format=RSS">
+<script type="text/javascript" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/gK_-IwrU2b9bwA3pxGRhPjE8KXLjbMqVv1Tu-EXWrX3fezqgfFHN4UJLFRbh52jhWD9kF.js"></script>
+<link rel="stylesheet" href="http://use.typekit.net/c/eabc41/1w;futura-pt,2,Y5K:V:n4;proxima-nova,2,fsR:V:i3,cdf:V:i6,cdX:V:i7,cdj:V:n3,cdg:V:n4,gGh:V:n6,cdW:V:n7/d?3bb2a6e53c9684ffdc9a9bf21d5b2a62e197b8a35fd0ae87d83f8c6456444b286823035c60a1ee67c28dcc78ab84960707855cb70e437e009cde5cd3caaf8484eb009e3efa6b5e5dcea638dfcac4688cabf10dc81633a877cb9d468f6e0e25f99589987cd06de81d3f6da8fe0fdec76c633086210ca78a95df19d2e867780a5d542cdbc8de31d9c2685fd3a7ccba84f136b137" media="all"><script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+<link rel="stylesheet" type="text/css" href="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/css">
+<!--[if gte IE 9]> <link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&part=1"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&part=2"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&part=3"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&part=4"/><![endif]-->
+<!--[if lt IE 9]><script src="//static.squarespace.com"></script><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&noMedia=true&part=1"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&noMedia=true&part=2"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&noMedia=true&part=3"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/5273d1fce4b06060b5e45101/198/4fd11f32c4aad9b01c9e624c/5273d1fde4b06060b5e45187/1262-05142015/1422670544515/site.css?&filterFeatures=false&noMedia=true&part=4"/><![endif]-->
+<!--[if !IE]> --><link rel="stylesheet" type="text/css" href="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/site.css"><!-- <![endif]-->
+<script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-45101494-1']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })(); </script><!-- End of Squarespace Headers -->
+</head>
+
+<body class="blog-sidebar-display-auto thumbnail-layout-basic-grid layout-style-left page-borders-thin   thumbnails-on-open-page-show-all gallery-page-controls-tiny-thumbnails  social-icon-style-normal   product-list-titles-under product-list-alignment-center product-item-size-11-square product-image-auto-crop product-gallery-size-11-square  show-product-price show-product-item-nav product-social-sharing   event-thumbnails event-thumbnail-size-32-standard event-date-label event-date-label-time event-list-show-cats event-list-date event-list-time event-list-address   event-icalgcal-links  event-excerpts  event-item-back-link      opentable-style-light newsletter-style-dark small-button-style-solid small-button-shape-square medium-button-style-solid medium-button-shape-square large-button-style-solid large-button-shape-square button-style-default button-corner-style-square native-currency-code-usd view-item collection-5273dca2e4b01beaee41a2c9 collection-type-blog collection-layout-default mobile-style-available logo-image" id="item-53a08b45e4b017961ee149c7" data-twttr-rendered="true">
+
+  <div id="canvas">
+
+      
+  <div id="mobileNav" class="">
+    <div id="mobileNavWrapper" class="wrapper">
+      <nav class="main-nav mobileNav">
+        <ul>
+          
+
+            
+              <li class="index-collection">
+                
+                  <a href="http://www.delimited.io/">Home</a>
+                
+              </li>
+            
+
+          
+
+            
+              <li class="blog-collection active-link">
+                
+                  <a href="http://www.delimited.io/blog/">Blog</a>
+                
+                
+              </li>
+            
+
+          
+
+            
+              <li class="page-collection">
+                
+                  <a href="http://www.delimited.io/about/">About</a>
+                
+                
+              </li>
+            
+
+          
+
+            
+              <li class="page-collection">
+                
+                  <a href="http://www.delimited.io/contact/">Contact</a>
+                
+                
+              </li>
+            
+
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <div id="mobileMenuLink"><a>Menu</a></div>
+
+
+
+
+
+    <header id="header">
+      <div id="logo" data-content-field="site-title">
+        
+        <h1 class="logo" data-shrink-original-size="22"><a href="http://www.delimited.io/"><img src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource" alt="delimited"></a></h1>
+        
+        
+      </div>
+      <script>
+        Y.use('squarespace-ui-base', function(Y) {
+          Y.all("#header .logo, #header .logo-subtitle").each(function (text) {
+            text.plug(Y.Squarespace.TextShrink, {
+              parentEl: Y.one('#header'),
+              triggerWidth: 750
+            });
+          });
+        });
+
+        // Show spinner on page load if loading bookmarked url
+        if (window.location.hash && window.location.hash !== '#') {
+          document.querySelector('body').className += ' index-loading';
+        }
+      </script>
+      <div id="topNav" data-content-field="navigation">
+<nav class="main-nav"><ul>
+  
+
+      <li class="index-collection">
+
+        
+          
+            <a href="http://www.delimited.io/">Home</a>
+          
+        
+
+      </li>
+
+  
+
+      <li class="blog-collection active-link">
+
+        
+
+          
+            <a href="http://www.delimited.io/blog/">Blog</a>
+          
+
+          
+
+
+        
+
+      </li>
+
+  
+
+      <li class="page-collection">
+
+        
+
+          
+            <a href="http://www.delimited.io/about/">About</a>
+          
+
+          
+
+
+        
+
+      </li>
+
+  
+
+      <li class="page-collection">
+
+        
+
+          
+            <a href="http://www.delimited.io/contact/">Contact</a>
+          
+
+          
+
+
+        
+
+      </li>
+
+  
+</ul>
+</nav>
+</div>
+
+    </header>
+
+    <div class="page-divider"></div>
+
+    <div class="extra-wrapper page-header">
+      <div class="sqs-layout sqs-grid-12 columns-12 empty" data-layout-label="Header Content: Blog" data-type="block-field" data-updated-on="1400631373013" id="page-header-5273dca2e4b01beaee41a2c9"><div class="row sqs-row"><div class="col sqs-col-12 span-12"></div></div></div>
+    </div>
+
+    <section id="page" role="main" data-content-field="main-content" style="min-height: 1670.890625px;">
+      <!-- CATEGORY NAV -->
+      
+      <div class="article-wrapper" id="yui_3_17_2_1_1432800330463_199">
+
+
+
+<article class="hentry promoted promoted-block-image category-tutorials tag-d3 tag-graphs author-steven-hall post-type-text" id="article-53a08b45e4b017961ee149c7" data-item-id="53a08b45e4b017961ee149c7">
+
+  <!--SPECIAL CONTENT-->
+
+  
+    <div class="special-content" id="yui_3_17_2_1_1432800330463_198"><div class="sqs-layout sqs-grid-12 columns-12" data-layout-label="Promoted Block" data-type="promoted-block" id="promoted-block-53a08b45e4b017961ee149c7"><div class="row sqs-row" id="yui_3_17_2_1_1432800330463_197"><div class="col sqs-col-12 span-12" id="yui_3_17_2_1_1432800330463_196"><div class="sqs-block image-block sqs-block-image" data-block-type="5" id="block-yui_3_17_2_1_1403030322007_11980"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_195">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_194">
+	
+		<div class="intrinsic" style="max-width:1081.0px;" id="yui_3_17_2_1_1432800330463_193">
+			
+				<a href="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/Snark Hunting_ Force Directed Graphs in D3 — delimited.html" id="yui_3_17_2_1_1432800330463_192">
+			
+				<div style="padding-bottom:56.24421691894531%;" class="image-block-wrapper   has-aspect-ratio" data-description="" id="yui_3_17_2_1_1432800330463_191">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/54cea75fe4b0728e90307a94/1422829442077/" data-image-dimensions="1081x608" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="54cea75fe4b0728e90307a94" data-type="image" style="top: -0.0447757223964302%; left: 0%; width: 100%; height: 100.089551444793%; position: absolute;" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(1)" data-image-resolution="750w">
+				</div>
+			
+				</a>
+			
+
+			
+
+		</div>
+	
+	</div>
+</div></div></div></div></div></div>
+  
+
+
+  <!--POST HEADER-->
+
+  <header>
+		<h1 class="entry-title">
+      
+        <a href="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/Snark Hunting_ Force Directed Graphs in D3 — delimited.html">Snark Hunting: Force Directed Graphs in D3</a>
+      
+    </h1>
+    <div class="meta">
+      <span class="date"><time class="published" datetime="2014-06-19">June 19, 2014</time></span>
+    </div>
+  </header>
+
+  <!--POST BODY-->
+
+
+  <div class="body entry-content" id="yui_3_17_2_1_1432800330463_219"><div class="sqs-layout sqs-grid-12 columns-12" data-layout-label="Post Body" data-type="item" data-updated-on="1403031044373" id="item-53a08b45e4b017961ee149c7"><div class="row sqs-row" id="yui_3_17_2_1_1432800330463_218"><div class="col sqs-col-12 span-12" id="yui_3_17_2_1_1432800330463_217"><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-236a16066552d0863c59"><div class="sqs-block-content"><p><em>Authored by Steven Hall</em></p><p>Is it possible to write a blog post that combines d3.js, pseudo-classical JavaScript, graph theory, and Lewis Carroll?&nbsp; Yes, THAT Lewis Carroll. The one who wrote <em>Alice in Wonderland</em>.&nbsp; We are going to try it here. &nbsp;</p><p>I thought I would mix in some fun historical trivia to keep it interesting as we check out force directed graphs in D3.&nbsp; In this post we are going to develop a tool to load up, display, and manipulate multiple graphs for exploration using the pseudo-classical pattern in JavaScript.&nbsp; We'll add in some useful features, a bit of style, and some cool animations to make a finished product (see the examples below).</p></div></div><div class="sqs-block image-block sqs-block-image sqs-col-3 span-3 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403039014637_74557"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_216">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_215">
+	
+		<div class="intrinsic" style="max-width:241.0px;" id="yui_3_17_2_1_1432800330463_214">
+			
+				<div style="padding-bottom:102.07469177246094%;" class="image-block-wrapper lightbox  has-aspect-ratio" data-description="&lt;p&gt;Controls for examples&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_213">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0b4ace4b08fa460f4fb59/1403040943274/"  alt="Controls for examples"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0b4ace4b08fa460f4fb59/1403040943274/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0b4ace4b08fa460f4fb59/1403040943274/" data-image-dimensions="241x246" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a0b4ace4b08fa460f4fb59" data-type="image" style="top: -0.157390184575767%; left: 0%; width: 100%; height: 100.314780369152%; position: absolute;" alt="Controls for examples" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(2)" data-image-resolution="300w">
+				</div>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Controls for examples</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403039014637_78115"><div class="sqs-block-content"><p>As usual, the demos presented here use a minimal amount of code.&nbsp; There's only about 250 lines of JavaScript (if you exclude the comments) in these examples.&nbsp; So it's enough to be a good template for your own project without requiring a ton of time to study and understand.&nbsp; The code includes some useful lines to keep the visualization responsive (without requiring JQuery) and methods that do things like remove or add links or nodes.</p><p>There's also a fun "shake" method to help minimize tangles when the graph is displayed by agitating the nodes a little.&nbsp; I find it annoying when the graph doesn't display correctly when it loads, so we'll take care of that.&nbsp; Additionally, the examples incorporate a set of controls to help understand and explore the effect of the various D3 force layout parameters using the awesome <a target="_blank" href="http://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage">dat.gui</a> library from Google.&nbsp; You can see a picture of the controls above.&nbsp; We'll cover the controls in depth below, but first I'll introduce the examples and talk a little bit about the data.</p><h2>Examples for this Blog Post</h2><p>As always you can either look at the examples in your browser and "view source" to see what's happening in the code or you can download the full set of examples and supporting code from <a target="_blank" href="https://github.com/sghall/d3-graphs">the GitHub repository</a>.&nbsp; The main classes are all found in the <a target="_blank" href="https://github.com/sghall/d3-graphs/blob/master/js/graph.js">graph.js file which you take a look at here</a>.</p><p><strong>BONUS</strong>:&nbsp; If you are working with adjacency lists from R, Python, etc you can compile your data from an Excel workbook.&nbsp; Clone or download <a target="_blank" href="https://github.com/sghall/d3-graphs">the GitHub repository</a> then change into the directory.&nbsp; Then:</p></div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1403275372285_73014"><div class="sqs-block-content"><pre class="source-code"><span class="cm-comment">// Compile adjacency lists from Excel workbook</span>
+<span class="cm-variable">npm</span> <span class="cm-variable">install</span>
+<span class="cm-variable">node</span> <span class="cm-variable">data</span><span class="cm-operator">/</span><span class="cm-variable">compile</span><span class="cm-operator">-</span><span class="cm-variable">data</span>.<span class="cm-property">js</span>
+
+<span class="cm-comment">// Fire up your viz on localhost</span>
+<span class="cm-variable">python</span> <span class="cm-operator">-</span><span class="cm-variable">m</span> <span class="cm-variable">SimpleHTTPServer</span> <span class="cm-number">8080</span></pre></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403275372285_74924"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_644">
+<p>Obviously, you need Node and NPM. The examples were created using this same script and you can just switch out the data in the Excel workbook and load up your data.&nbsp; Worksheet names will be the names of the datasets you can choose in the visualization.&nbsp; Check out the examples to get the idea.</p>
+<h2 id="yui_3_17_2_1_1403275372285_73079"><a target="_blank" data-cke-saved-href="https://github.com/sghall/d3-graphs" href="https://github.com/sghall/d3-graphs" id="yui_3_17_2_1_1432800330463_643">Download All the Code from GitHub</a></h2></div></div><div class="sqs-block horizontalrule-block sqs-block-horizontalrule" data-block-type="47" id="block-yui_3_17_2_1_1403030322007_38855"><div class="sqs-block-content"><hr></div></div><div class="sqs-block image-block sqs-block-image sqs-col-6 span-6 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403030322007_43121"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_243">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_242">
+	
+		<div class="intrinsic" style="max-width:605.0px;" id="yui_3_17_2_1_1432800330463_241">
+			
+				<a href="http://projects.delimited.io/experiments/d3-graphs/graphs-56v.html" target="_blank" id="yui_3_17_2_1_1432800330463_240">
+			
+				<div style="padding-bottom:80.0%;" class="image-block-wrapper   has-aspect-ratio" data-description="&lt;p&gt;Snark graph with 56 vertices&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_239">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a097d0e4b056bf8ed5f4b2/1403033618491/"  alt="Snark graph with 56 vertices"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a097d0e4b056bf8ed5f4b2/1403033618491/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a097d0e4b056bf8ed5f4b2/1403033618491/" data-image-dimensions="605x484" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a097d0e4b056bf8ed5f4b2" data-type="image" style="top: -0.143540669856471%; left: 0%; width: 100%; height: 100.287081339713%; position: absolute;" alt="Snark graph with 56 vertices" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(3)" data-image-resolution="300w">
+				</div>
+			
+				</a>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Snark graph with 56 vertices</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403030322007_38934"><div class="sqs-block-content">
+<h3>Example #1 - Snark (56 Vertices)</h3><p>An example of a "snark" (explained below) with 56 vertices or nodes rendered in D3.&nbsp; In the example you can switch to other datasets and adjust the D3 force layout parameters dynamically.&nbsp; You can also drag and remove nodes (by double clicking them).</p><h3><a target="_blank" href="http://projects.delimited.io/experiments/d3-graphs/graphs-56v.html">View the Example Here</a></h3>
+</div></div><div class="sqs-block horizontalrule-block sqs-block-horizontalrule" data-block-type="47" id="block-yui_3_17_2_1_1403030322007_63030"><div class="sqs-block-content"><hr></div></div><div class="sqs-block image-block sqs-block-image sqs-col-6 span-6 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403030322007_64371"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_260">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_259">
+	
+		<div class="intrinsic" style="max-width:495.0px;" id="yui_3_17_2_1_1432800330463_258">
+			
+				<a href="http://projects.delimited.io/experiments/d3-graphs/graphs-36v.html" target="_blank" id="yui_3_17_2_1_1432800330463_257">
+			
+				<div style="padding-bottom:80.0%;" class="image-block-wrapper   has-aspect-ratio" data-description="&lt;p&gt;Snark graph with 36 vertices&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_256">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a09967e4b056bf8ed5f7e7/1403034057126/"  alt="Snark graph with 36 vertices"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a09967e4b056bf8ed5f7e7/1403034057126/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a09967e4b056bf8ed5f7e7/1403034057126/" data-image-dimensions="495x396" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a09967e4b056bf8ed5f7e7" data-type="image" style="top: -0.143540669856471%; left: 0%; width: 100%; height: 100.287081339713%; position: absolute;" alt="Snark graph with 36 vertices" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(4)" data-image-resolution="300w">
+				</div>
+			
+				</a>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Snark graph with 36 vertices</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403030322007_57657"><div class="sqs-block-content"><h3>Example #2 - Snark (36 Vertices)</h3><p>An example of a snark with 36 vertices.&nbsp; The example is identical to the first one except that the snark with 36 vertices is loaded when the user opens the page.&nbsp; Again all the examples are really the same exact code with a few lines of JavaScript changing in a script tag in each HTML file.</p><h3><a target="_blank" href="http://projects.delimited.io/experiments/d3-graphs/graphs-36v.html">View the Example Here</a></h3><p>&nbsp;</p><p>&nbsp;</p></div></div><div class="sqs-block horizontalrule-block sqs-block-horizontalrule" data-block-type="47" id="block-yui_3_17_2_1_1403039014637_64474"><div class="sqs-block-content"><hr></div></div><div class="sqs-block image-block sqs-block-image sqs-col-6 span-6 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403039014637_57111"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_277">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_276">
+	
+		<div class="intrinsic" style="max-width:566.0px;" id="yui_3_17_2_1_1432800330463_275">
+			
+				<a href="http://projects.delimited.io/experiments/d3-graphs/graphs-40v.html" target="_blank" id="yui_3_17_2_1_1432800330463_274">
+			
+				<div style="padding-bottom:80.03533172607422%;" class="image-block-wrapper   has-aspect-ratio" data-description="&lt;p&gt;Snark graph with 40 vertices&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_273">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0b444e4b08fa460f4fa4b/1403040886204/"  alt="Snark graph with 40 vertices"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0b444e4b08fa460f4fa4b/1403040886204/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0b444e4b08fa460f4fa4b/1403040886204/" data-image-dimensions="566x453" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a0b444e4b08fa460f4fa4b" data-type="image" style="top: -0.16568887686612%; left: 0%; width: 100%; height: 100.331377753732%; position: absolute;" alt="Snark graph with 40 vertices" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(5)" data-image-resolution="300w">
+				</div>
+			
+				</a>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Snark graph with 40 vertices</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403039014637_63989"><div class="sqs-block-content"><h3>Example #3 - Snark (40 Vertices)</h3><p>This example is similar in structure to the first example above with 56 vertices.&nbsp; By changing some of the parameters for the force layout (e.g. changing the link distance)&nbsp; you can create some really beautiful versions of the graph that highlight the nature of the network of nodes and links.</p><h3><a target="_blank" href="http://projects.delimited.io/experiments/d3-graphs/graphs-40v.html">View the Example Here</a></h3></div></div><div class="sqs-block horizontalrule-block sqs-block-horizontalrule" data-block-type="47" id="block-yui_3_17_2_1_1403030322007_99342"><div class="sqs-block-content"><hr></div></div><div class="sqs-block image-block sqs-block-image sqs-col-6 span-6 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403030322007_103113"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_294">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_293">
+	
+		<div class="intrinsic" style="max-width:734.0px;" id="yui_3_17_2_1_1432800330463_292">
+			
+				<a href="http://projects.delimited.io/experiments/d3-graphs/graphs-10v.html" target="_blank" id="yui_3_17_2_1_1432800330463_291">
+			
+				<div style="padding-bottom:79.97274780273438%;" class="image-block-wrapper   has-aspect-ratio" data-description="&lt;p&gt;Snark graph with 10 vertices (a Peterson graph)&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_290">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0a02ae4b0d840eaef1a42/1403035787806/"  alt="Snark graph with 10 vertices (a Peterson graph)"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0a02ae4b0d840eaef1a42/1403035787806/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a0a02ae4b0d840eaef1a42/1403035787806/" data-image-dimensions="734x587" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a0a02ae4b0d840eaef1a42" data-type="image" style="top: -0.126461807230484%; left: 0%; width: 100%; height: 100.252923614461%; position: absolute;" alt="Snark graph with 10 vertices (a Peterson graph)" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(6)" data-image-resolution="300w">
+				</div>
+			
+				</a>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Snark graph with 10 vertices (a Peterson graph)</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403030322007_99421"><div class="sqs-block-content"><h3>Example #4&nbsp; - Snark (10 Vertices)</h3><p>Another quick example of one of the snarks with a small number of vertices.&nbsp; This type of snark is often called a Peterson graph as well. Even with a small number of vertices a variety of layouts can be achieved.</p><h3><a target="_blank" href="http://projects.delimited.io/experiments/d3-graphs/graphs-10v.html">View the Example Here</a></h3><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></div></div><div class="sqs-block horizontalrule-block sqs-block-horizontalrule" data-block-type="47" id="block-yui_3_17_2_1_1403030322007_119629"><div class="sqs-block-content"><hr></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403030322007_119708"><div class="sqs-block-content"><h2>About the Graph Data</h2></div></div><div class="sqs-block image-block sqs-block-image sqs-col-5 span-5 float float-right" data-block-type="5" id="block-yui_3_17_2_1_1403039014637_268610"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_310">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_309">
+	
+		<div class="intrinsic" style="max-width:394.0px;" id="yui_3_17_2_1_1432800330463_308">
+			
+				<div style="padding-bottom:151.77664184570312%;" class="image-block-wrapper   has-aspect-ratio" data-description="&lt;p&gt;Illustration for The Hunting of the Snark - Wikipedia&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_307">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a11909e4b01756877b1173/1403066634154/"  alt="Illustration for The Hunting of the Snark - Wikipedia"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a11909e4b01756877b1173/1403066634154/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a11909e4b01756877b1173/1403066634154/" data-image-dimensions="394x598" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a11909e4b01756877b1173" data-type="image" style="top: 0%; left: -0.0362844702467271%; width: 100.072568940493%; height: 100%; position: absolute;" alt="Illustration for The Hunting of the Snark - Wikipedia" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(7)" data-image-resolution="300w">
+				</div>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Illustration for The Hunting of the Snark - Wikipedia</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403039014637_271841"><div class="sqs-block-content"><p>The graph data used in the examples is really a collection of smaller graphs that are referred to as <a target="_blank" href="http://en.wikipedia.org/wiki/Snark_(graph_theory)">snarks</a>.&nbsp; They are somewhat mysterious graphs with some interesting properties that you can read more about on the Wikipedia page.&nbsp; They also can produce some pretty cool visualizations (not all of them, but a few are pretty fun to play around with).&nbsp; I thought they would make a good foundation for writing about creating force directed graphs in D3.</p><p><strong>Why Are They Called Snarks?</strong></p><p><em>Alice in Wonderland</em> is not only one of the most well-known children's stories, but is also a story filled with clever allusions to mathematical concepts and logical puzzles.&nbsp; The pen name "Lewis Carroll" was used by a complicated man (accused of being a pedophile...among other thing) whose real name was <a target="_blank" href="http://en.wikipedia.org/wiki/Lewis_Carroll">Charles Dodgson</a>.&nbsp; In addition to being a master story teller, he happened to be a mathematician and logician who also wrote numerous texts on a variety of mathematical subjects.&nbsp; He worked most of his career as <span style="font-size:medium">a mathematician at Christ Church College, Oxford</span>.&nbsp; If you're interested in some of the mathematical ideas embedded in <em>Alice in Wonderland</em> you may want to check out <a target="_blank" href="http://en.wikipedia.org/wiki/Alice%27s_Adventures_in_Wonderland#Symbolism">this part of the Wikipedia page</a> or <a target="_blank" href="http://www.maa.org/external_archive/devlin/devlin_03_10.html">this article</a>.</p></div></div><div class="sqs-block image-block sqs-block-image sqs-col-4 span-4 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403174027664_186986"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_326">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_325">
+	
+		<div class="intrinsic" style="max-width:640.0px;" id="yui_3_17_2_1_1432800330463_324">
+			
+				<div style="padding-bottom:92.1875%;" class="image-block-wrapper lightbox  has-aspect-ratio" data-description="&lt;p&gt;Example Flower Snarks - Wikipedia&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_323">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a2cb8be4b04eb2cd481007/1403177867596/Flower_snarks.svg.png"  alt="Example Flower Snarks - Wikipedia"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a2cb8be4b04eb2cd481007/1403177867596/Flower_snarks.svg.png" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a2cb8be4b04eb2cd481007/1403177867596/Flower_snarks.svg.png" data-image-dimensions="640x590" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a2cb8be4b04eb2cd481007" data-type="image" style="top: -0.0885416666666643%; left: 0%; width: 100%; height: 100.177083333333%; position: absolute;" alt="Example Flower Snarks - Wikipedia" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/Flower_snarks.svg.png" data-image-resolution="300w">
+				</div>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Example Flower Snarks - Wikipedia</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403174027664_195272"><div class="sqs-block-content"><p>Carroll also wrote a lesser known <a target="_blank" href="http://en.wikipedia.org/wiki/Nonsense_verse">nonsense</a> poem called <a target="_blank" href="http://en.wikipedia.org/wiki/The_Hunting_of_the_Snark"><em>The Hunting of the Snark</em></a>.&nbsp; In the poem the snark is a mysterious class of creature that is never fully described and at the end of the story the reader is left wondering what the creature even looks like.&nbsp; Carrol himself would never elaborate on what exactly a snark was, preferring to say "<span style="font-size:14px">he did not know and could not explain."</span></p><p>And so snark seemed like a perfect name for a family of graphs that remains mysterious and difficult to describe.&nbsp; From the Wikipedia page on snarks:</p></div></div><div class="sqs-block quote-block sqs-block-quote" data-block-type="31" id="block-yui_3_17_2_1_1403039014637_131621"><div class="sqs-block-content"><figure>
+  <blockquote>
+    <span>“</span>In the study of various important and difficult problems in graph theory...one encounters an interesting but somewhat mysterious variety of graphs called snarks. In spite of their simple definition, and over a century long investigation, their properties and structure are largely unknown.<span>”</span>
+  </blockquote>
+  <figcaption class="source">— Miroslav Chladný  - Wikipedia</figcaption>
+</figure></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403039014637_131698"><div class="sqs-block-content"><p>There are also really fun to look at and make a good launching point for talking about D3's force layout.&nbsp; After some searching, I found a dataset that contains the node and link information for many common snark graphs (thank you, internet!).&nbsp; You can get the original data <a target="_blank" href="http://www.web.uvic.ca/~gkc/giancarlo_snarks.html">here</a>.</p><h2>Looking at the Code</h2><p>Creating a D3 viz is less commonly done using a pseudo-classical style, but can be a powerful way of organizing your code if you need to develop visualizations that are more like small applications or tools that provide complex interactions rather than just a simple chart or graph.&nbsp; When I first started I was constantly running into walls when I needed to add a new feature or provide some interactivity to my data visualizations.&nbsp; Learning more about the various JavaScript patterns can give you a nice tool box to draw from in your work.</p><p>If you are unfamiliar with the pseudo-classical pattern, you can take a <a target="_blank" href="http://www.delimited.io/blog/2014/4/22/javascript-object-instantiation-by-example-d3-map-control">look at this post I did a few weeks back</a> that gives you a quick overview of the most common patterns.&nbsp; We are going to develop a graph class that can dynamically load, add/remove nodes, and allow you to quickly adjust the various parameters on the d3.force.layout (like charge and gravity) to create the view you want to see with your graph data.</p><p>A graph at its most fundamental is a set of vertices and edges.&nbsp; In the D3 world, vertices are usually referred to as "nodes" and edges are referred to as "links."&nbsp; In D3, in order to get a graph to the screen, we need to deliver our nodes and links as arrays of objects to the force layout. You can send an array of arrays that contain numbers (aka adjacency lists), but D3 behind the scenes converts these to objects because it needs to add additional properties in order to make the simulations run.&nbsp; We'll look at that process more closely below, but let's take a look at what's happening in the main JavaScript file in the examples first.</p><p>In these examples, the bulk of the action is happening in <a target="_blank" href="https://github.com/sghall/d3-graphs/blob/master/js/graph.js">the graph.js file</a>, so it will make sense to focus in on that file.&nbsp; If you look in that file, you'll see classes for all the things we will need:&nbsp; Config, Node, Link and Graph.&nbsp; The only objects we need to interact with directly are Config and Graph.&nbsp; You'll find in each HTML file for the examples that the process is exactly the same: (1) load our data, (2) create a Config instance and (3) make a new Graph by passing it the data and configuration information.&nbsp; The rest of the graph.js file, for the most part, is defining a set of methods on the graph.prototype that will give us all the functionality that we need like adding and removing node or links.</p><p>The code in full for each of the example HTML files looks like this:</p></div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1403039014637_208284"><div class="sqs-block-content"><pre class="source-code"><span class="cm-comment">// CODE FROM THE HTML TO INITIATE THE PROCESS</span>
+<span class="cm-variable">d3</span>.<span class="cm-property">json</span>(<span class="cm-string">'data/snarks.json'</span>, <span class="cm-keyword">function</span> (<span class="cm-def">error</span>, <span class="cm-def">data</span>) {  <span class="cm-comment">//A</span>
+
+  <span class="cm-keyword">var</span> <span class="cm-def">config</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Config</span>({  <span class="cm-comment">//B</span>
+    <span class="cm-property">height</span>: <span class="cm-variable">window</span>.<span class="cm-property">innerHeight</span>,
+    <span class="cm-property">width</span>: <span class="cm-variable">window</span>.<span class="cm-property">innerWidth</span>,
+    <span class="cm-property">dataset</span>: <span class="cm-string">'snark56'</span>,
+    <span class="cm-property">gravity</span>: <span class="cm-number">0.21</span>,
+    <span class="cm-property">charge</span>: <span class="cm-operator">-</span><span class="cm-number">550</span>,
+    <span class="cm-property">theta</span>: <span class="cm-number">0.9</span>,
+    <span class="cm-property">friction</span>: <span class="cm-number">0.9</span>,
+    <span class="cm-property">distance</span>: <span class="cm-number">10</span>,
+    <span class="cm-property">strength</span>: <span class="cm-number">0.9</span>
+  });
+
+  <span class="cm-variable">window</span>.<span class="cm-property">graph</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Graph</span>(<span class="cm-variable-2">data</span>, <span class="cm-variable-2">config</span>); <span class="cm-comment">//C</span>
+  <span class="cm-variable">graph</span>.<span class="cm-property">update</span>(); <span class="cm-comment">//C</span>
+  <span class="cm-variable">graph</span>.<span class="cm-property">shake</span>();  <span class="cm-comment">//D</span>
+  <span class="cm-variable">window</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">'resize'</span>, <span class="cm-variable">graph</span>.<span class="cm-property">onResize</span>.<span class="cm-property">bind</span>(<span class="cm-variable">graph</span>), <span class="cm-atom">true</span>); <span class="cm-comment">//E</span>
+});</pre></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403196234298_174548"><div class="sqs-block-content"><p id="yui_3_17_2_1_1403196234298_240106">As usual when doing D3 data visualizations, we begin at point A with an asynchronous call to fetch the data file that has the node and link information for all the snark graphs.&nbsp; With the data loaded a Config object is created with all our initializing values.&nbsp; This Config instance will become important for set up our controls in dat.gui below.&nbsp;</p></div></div><div class="sqs-block image-block sqs-block-image sqs-col-5 span-5 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403039014637_237230"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_349">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_348">
+	
+		<div class="intrinsic" style="max-width:320.0px;" id="yui_3_17_2_1_1432800330463_347">
+			
+				<div style="padding-bottom:145.9375%;" class="image-block-wrapper lightbox  has-aspect-ratio" data-description="&lt;p&gt;The instance of graph created on page load&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_346">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a2bf10e4b017961ee4d267/1403174672925/"  alt="The instance of graph created on page load"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a2bf10e4b017961ee4d267/1403174672925/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a2bf10e4b017961ee4d267/1403174672925/" data-image-dimensions="320x467" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a2bf10e4b017961ee4d267" data-type="image" style="top: 0%; left: -0.098985899559608%; width: 100.197971799119%; height: 100%; position: absolute;" alt="The instance of graph created on page load" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(8)" data-image-resolution="300w">
+				</div>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>The instance of graph created on page load</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403196234298_240640"><div class="sqs-block-content"><p>At point C above we create a new graph and make it a global (i.e. window.graph), simply so it can be inspected in the console for these examples.&nbsp; You would not normally do this because, as we all know, global variables are bad news. But in this case you can interact with the graph in the console: adding and removing nodes etc (call graph.update() after to make your changes reflect on the screen).&nbsp; The new graph gets passed the data file and all the configuration information.&nbsp; What we get back is an object like the one seen in the screen shot to the left.</p><p>The object that gets created is more than simply the graph itself. The instance of Graph has all the properties and methods needed to switch out datasets, add or remove nodes, update the screen, and also contains an instance of dat.gui (the controls).&nbsp; You can see all the methods that the graph object has by inspecting the prototype object in the console (this is __proto__ in chrome).</p><p>&nbsp;</p><p>&nbsp;</p><h2>D3 Force Layouts</h2><p>When you run graph.force.start() in these code examples you are running a physics simulation in the browser.&nbsp; D3 gives you a set of parameters that you can use to control how the objects behave which we'll look at below in the section on dat.gui.&nbsp; Here, it's important to point out that, when working with the D3 force layout (just like some other layouts) is that it is modifying your node and link objects when the simulation is running.&nbsp; Let's take the nodes as an example.&nbsp; If you look in the graph.js file, the Node class is dead simple:</p></div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1403196234298_117063"><div class="sqs-block-content"><pre class="source-code"><span class="cm-keyword">var</span> <span class="cm-variable">Node</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">obj</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">id</span> <span class="cm-operator">=</span> <span class="cm-variable-2">obj</span>.<span class="cm-property">id</span>;
+};</pre></div></div><div class="sqs-block image-block sqs-block-image sqs-col-5 span-5 float float-left" data-block-type="5" id="block-yui_3_17_2_1_1403196234298_107646"><div class="sqs-block-content" id="yui_3_17_2_1_1432800330463_372">
+	<div class="image-block-outer-wrapper layout-caption-below " id="yui_3_17_2_1_1432800330463_371">
+	
+		<div class="intrinsic" style="max-width:216.0px;" id="yui_3_17_2_1_1432800330463_370">
+			
+				<div style="padding-bottom:113.42591857910156%;" class="image-block-wrapper lightbox  has-aspect-ratio" data-description="&lt;p&gt;Node with new attributes added by D3&lt;/p&gt;" id="yui_3_17_2_1_1432800330463_369">
+					<noscript>&lt;img src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a354fee4b014abdd65fd49/1403213080601/"  alt="Node with new attributes added by D3"  /&gt;</noscript><img class="thumb-image loaded" data-src="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a354fee4b014abdd65fd49/1403213080601/" data-image="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/t/53a354fee4b014abdd65fd49/1403213080601/" data-image-dimensions="216x245" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="53a354fee4b014abdd65fd49" data-type="image" style="top: 0%; left: -0.111667308432807%; width: 100.223334616866%; height: 100%; position: absolute;" alt="Node with new attributes added by D3" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(9)" data-image-resolution="300w">
+				</div>
+			
+
+			
+			<div class="image-caption-wrapper">
+				<div class="image-caption"><p>Node with new attributes added by D3</p></div>
+			</div>
+			
+
+		</div>
+	
+	</div>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403196234298_264465"><div class="sqs-block-content"><p>That's it.&nbsp; We just give each of our nodes a unique id.&nbsp; We could add other info we wanted to store there as well, but that's the minimum we need to make this simple set of examples work. But if you look at an actual node in the console, you can see that D3 is augmenting our object with its own properties (see the screenshot to the left) in order to control its position during the simulation.&nbsp; Properties for weight, index, px, py, x, and y are needed for D3 determine where the nodes (and links as well) are and where they're going on the next tick of the simulation.&nbsp; It's important not store information with these property names on your object because they will get over written.</p><p>Once we have given the force layout our arrays of nodes and links, there are some other parameters that can be set on the force layout to make it behave in different ways.&nbsp;&nbsp; I think the best way to understand those parameters, like charge, friction, theta, etc, is to be able to play with them in the browser on a real graph.&nbsp; In the next section we'll wire up the controls for doing this.</p><h2>Hooking Up the DAT.GUI Controls</h2><p><a target="_blank" href="http://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage">Dat.gui</a> is one of those great ideas that the wizards at Google came up with.&nbsp; It's a super lightweight way to make a simple interface for your visualization.&nbsp; Even better for me, <a target="_blank" href="http://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage">the documentation</a> is really great so you can take a look at that in order to get all the details.&nbsp; We only need to say a few things here.&nbsp; In making these examples I tried to pull out all the key knobs you want to be able to play with on a D3 force layout and put them in a single object that can be manipulated by dat.gui.&nbsp; There are some other that could be added but I think all the key parameters are there (if you want to add more it is pretty straightforward).</p><p>The Config class in the graph.js file will take whatever properties you pass in on an object and create an new instance with those properties.&nbsp; The class looks like this:</p></div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1403196234298_307898"><div class="sqs-block-content"><pre class="source-code"><span class="cm-keyword">var</span> <span class="cm-variable">Config</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">options</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">opt</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">options</span>) {
+    <span class="cm-keyword">this</span>[<span class="cm-variable-2">opt</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">options</span>[<span class="cm-variable-2">opt</span>];
+  }
+};</pre></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403196234298_307979"><div class="sqs-block-content"><p>In the HTML file for the examples we create an instance and pass that into our graph along with the data.&nbsp; It looks like this:</p></div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1403196234298_309869"><div class="sqs-block-content"><pre class="source-code"><span class="cm-keyword">var</span> <span class="cm-variable">config</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Config</span>({
+  <span class="cm-property">height</span>: <span class="cm-variable">window</span>.<span class="cm-property">innerHeight</span>,
+  <span class="cm-property">width</span>: <span class="cm-variable">window</span>.<span class="cm-property">innerWidth</span>,
+  <span class="cm-property">dataset</span>: <span class="cm-string">'snark40'</span>,
+  <span class="cm-property">gravity</span>: <span class="cm-number">0.21</span>,
+  <span class="cm-property">charge</span>: <span class="cm-operator">-</span><span class="cm-number">550</span>,
+  <span class="cm-property">theta</span>: <span class="cm-number">0.9</span>,
+  <span class="cm-property">friction</span>: <span class="cm-number">0.9</span>,
+  <span class="cm-property">distance</span>: <span class="cm-number">10</span>,
+  <span class="cm-property">strength</span>: <span class="cm-number">0.9</span>
+});
+
+<span class="cm-variable">window</span>.<span class="cm-property">graph</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Graph</span>(<span class="cm-variable">data</span>, <span class="cm-variable">config</span>);
+</pre></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403196234298_309949"><div class="sqs-block-content"><p>Inside of the Graph class we do the rest of the wiring when a new Graph instance is created.&nbsp; For each variable that we want to appear in our controls we need to pass in a function that tells dat.gui what to do when the value changes.&nbsp; For example, the code for the gravity parameter looks like this:</p></div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1403196234298_318310"><div class="sqs-block-content"><pre class="source-code"><span class="cm-comment">// Inside the Graph class in graph.js</span>
+<span class="cm-keyword">this</span>.<span class="cm-property">datgui</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">dat</span>.<span class="cm-property">GUI</span>();
+
+<span class="cm-keyword">this</span>.<span class="cm-property">datgui</span>.<span class="cm-property">add</span>(<span class="cm-keyword">this</span>.<span class="cm-property">config</span>, <span class="cm-string">'gravity'</span>, <span class="cm-operator">-</span><span class="cm-number">0.1</span>, <span class="cm-number">1</span>).<span class="cm-property">onChange</span>(<span class="cm-keyword">function</span> (<span class="cm-def">d</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">force</span>.<span class="cm-property">gravity</span>(<span class="cm-variable-2">d</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">force</span>.<span class="cm-property">start</span>()
+}.<span class="cm-property">bind</span>(<span class="cm-keyword">this</span>));</pre></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_1_1403039014637_237435"><div class="sqs-block-content"><p>This tells dat.gui that we want a control for a property called 'gravity' on the this.config object.&nbsp; The range of input values for the control should be -0.1 to 1.&nbsp; We then pass in a function that changes the gravity parameter on the force layout and then starts (restarts) the simulation.&nbsp; We also bind this function so it will always run in the context of the Graph instance.&nbsp;</p><p>The code to set up the controls using dat.gui ended up being pretty verbose, but the payoff (I think) is worth it.&nbsp; Playing with the controls really helps understand how each of the different parameters will impact the graph.&nbsp; Very cool.</p></div></div></div></div></div></div>
+  
+
+
+  <!--POST FOOTER-->
+
+  <footer>
+    <div class="meta">
+
+      
+
+      <div class="first meta-row">
+        <span class="categories"><span class="categories-title">In</span> <a href="http://www.delimited.io/blog/?category=Tutorials" rel="tag">Tutorials</a></span>
+        <span class="tags"><span class="tags-title">Tags</span> <a href="http://www.delimited.io/blog/?tag=d3" rel="tag">d3</a>, <a href="http://www.delimited.io/blog/?tag=graphs" rel="tag">graphs</a></span>
+      </div>
+
+      <div class="second meta-row">
+        <span class="sqs-simple-like" data-item-id="53a08b45e4b017961ee149c7" data-like-count="5" id="yui_3_17_2_1_1432800330463_493"><span class="like-icon"></span><span class="like-count">5 Likes</span></span>
+        <span class="squarespace-social-buttons inline-style" data-system-data-id="" data-asset-url="http://static1.squarespace.com/static/5273d1fce4b06060b5e45101/5273dca2e4b01beaee41a2c9/53a08b45e4b017961ee149c7/1422832268268/" data-record-type="1" data-full-url="/blog/2014/6/17/force-directed-graphs-in-d3" data-title="Snark Hunting: Force Directed Graphs in D3"><div id="social-yui_3_17_2_1_1432800330463_450" class="yui3-widget yui3-socialbutton"><div id="yui_3_17_2_1_1432800330463_455" class="yui3-socialbutton-content"><div class="ss-social-button-wrapper"><div class="ss-social-button"><span class="ss-social-button-icon"></span>Share</div></div><div class="ss-social-list-wrapper"><div class="ss-social-button-list"></div></div></div></div></span>
+      </div>
+
+    </div>
+  </footer>
+
+
+  </article>
+
+
+
+<!--PAGINATION-->
+
+
+  <nav class="pagination clear">
+      <a class="prev-item" href="http://www.delimited.io/blog/2014/7/16/d3-directives-in-angularjs">← Creating Custom D3 Directives in AngularJS</a><a class="next-item" href="http://www.delimited.io/blog/2014/5/10/maps-with-d3js-threejs-and-mapbox">Interactive Maps with D3.js, Three.js, and Mapbox →</a>
+  </nav>
+
+
+
+  <!-- COMMENTS -->
+
+  <section id="comments-" class="comments-wrapper">
+    <div class="squarespace-comments" id="disqus_thread"><iframe id="dsq-2" data-disqus-uid="2" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" width="100%" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource.html" style="width: 100% !important; border: none !important; overflow: hidden !important; height: 602px !important;" horizontalscrolling="no" verticalscrolling="no"></iframe></div>
+  </section>
+
+</div>
+
+<aside id="sidebar"><div class="sqs-layout sqs-grid-1 columns-1" data-layout-label="Blog Sidebar" data-type="block-field" data-updated-on="1420320616991" id="sidebarBlocks"><div class="row sqs-row"><div class="col sqs-col-1 span-1"><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-bf6681777d15699ee39b"><div class="sqs-block-content"><h2>Latest Blog Posts</h2></div></div><div class="sqs-block summary-block sqs-block-summary" data-block-type="20" id="block-d57fd4b7b859322f1c87"><div class="sqs-block-content"><div class="summary-item-list">
+  <div class="summary-collection-title">Blog</div>
+
+    
+    <div class="summary-item">
+      
+      <div class="summary-content">
+        
+          <div class="summary-title"><a href="http://www.delimited.io/blog/2015/5/16/interactive-webgl-globes-with-threejs-and-d3">Interactive WebGL Globes with THREE.js and D3</a></div>
+        
+        
+          <time class="timestamp" datetime="2015-05-17"><span class="timesince" data-date="1431899324089">A week ago</span></time>
+        
+        
+      </div>
+    </div>
+    
+    <div class="summary-item">
+      
+      <div class="summary-content">
+        
+          <div class="summary-title"><a href="http://www.delimited.io/blog/2015/1/21/selections-in-threejs-part-ii">Selections in THREE.js - Parte Dos</a></div>
+        
+        
+          <time class="timestamp" datetime="2015-01-23"><span class="timesince" data-date="1422026118867">4 months ago</span></time>
+        
+        
+      </div>
+    </div>
+    
+    <div class="summary-item">
+      
+      <div class="summary-content">
+        
+          <div class="summary-title"><a href="http://www.delimited.io/blog/2015/1/21/selections-in-threejs">Selections in THREE.js - Parte Uno</a></div>
+        
+        
+          <time class="timestamp" datetime="2015-01-23"><span class="timesince" data-date="1422025475586">4 months ago</span></time>
+        
+        
+      </div>
+    </div>
+    
+    <div class="summary-item">
+      
+      <div class="summary-content">
+        
+          <div class="summary-title"><a href="http://www.delimited.io/blog/2014/11/18/interactive-chord-diagrams-in-d3">Interactive Chord Diagrams in D3</a></div>
+        
+        
+          <time class="timestamp" datetime="2014-11-19"><span class="timesince" data-date="1416425754477">6 months ago</span></time>
+        
+        
+      </div>
+    </div>
+    
+    <div class="summary-item">
+      
+      <div class="summary-content">
+        
+          <div class="summary-title"><a href="http://www.delimited.io/blog/2014/7/16/d3-directives-in-angularjs">Creating Custom D3 Directives in AngularJS</a></div>
+        
+        
+          <time class="timestamp" datetime="2014-08-07"><span class="timesince" data-date="1407421393697">9 months ago</span></time>
+        
+        
+      </div>
+    </div>
+    
+</div>
+
+</div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_3_1420320008260_11108"><div class="sqs-block-content"><script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- side-blog-1 -->
+<ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-5955077962119421" data-ad-slot="9276372198"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div></div><div class="sqs-block rss-block sqs-block-rss" data-block-type="49" id="block-yui_3_10_1_1_1400619006429_7748"><div class="sqs-block-content"><a href="http://www.delimited.io/blog/?format=rss" title="Blog RSS" class="social-rss">Blog RSS</a></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-972129d52ede2a425267"><div class="sqs-block-content"><h2>Twitter</h2></div></div><div class="sqs-block twitter-block sqs-block-twitter twitter" data-block-json="{&quot;collectionId&quot;:&quot;528188fce4b0f8aebbcbb7ad&quot;,&quot;pageSize&quot;:3,&quot;title&quot;:&quot;Twitter&quot;,&quot;showAvatar&quot;:false,&quot;showUsername&quot;:true,&quot;followButton&quot;:true,&quot;schemaName&quot;:&quot;twitter&quot;}" data-block-type="6" id="block-f9f0f6fbf0e34ad58db3"><div class="sqs-block-content">
+  <ul class="tweet-list">
+    
+      <li class="tweet clear no-avatar " id="555ea577e4b01102cb923024">
+        
+        <div class="tweet-text-wrapper">
+          
+            <div class="tweet-from"><a target="new" href="http://www.twitter.com/DelimitedTech/">Steve Hall</a></div>
+          
+          <div class="tweet-text">Really like this effect... <a href="https://t.co/06EWBcRs5G" rel="nofollow">https://t.co/06EWBcRs5G</a></div>
+          <time class="tweet-timestamp" datetime="2015-05-21"><a target="new" href="http://twitter.com/DelimitedTech/status/601581453059600384"><span class="timesince" data-date="1432263169000">6 days ago</span></a></time>
+        </div>
+      </li>
+    
+      <li class="tweet clear no-avatar " id="555927ace4b003951c6e6851">
+        
+        <div class="tweet-text-wrapper">
+          
+            <div class="tweet-from"><a target="new" href="http://www.twitter.com/DelimitedTech/">Steve Hall</a></div>
+          
+          <div class="tweet-text">New post on creating interactive <a href="https://twitter.com/#!/search?q=%23WebGL" title="#WebGL" class="tweet-url hashtag" rel="nofollow">#WebGL</a> globes with <a href="https://twitter.com/#!/search?q=%23d3js" title="#d3js" class="tweet-url hashtag" rel="nofollow">#d3js</a> and <a href="https://twitter.com/#!/search?q=%23threejs" title="#threejs" class="tweet-url hashtag" rel="nofollow">#threejs</a>. <a href="http://t.co/49c5Wcxo78" rel="nofollow">http://t.co/49c5Wcxo78</a> <a href="https://twitter.com/#!/search?q=%23dataviz" title="#dataviz" class="tweet-url hashtag" rel="nofollow">#dataviz</a> <a href="https://twitter.com/#!/search?q=%23JavaScript" title="#JavaScript" class="tweet-url hashtag" rel="nofollow">#JavaScript</a> <a href="http://t.co/PFprzxvhV2" rel="nofollow">http://t.co/PFprzxvhV2</a></div>
+          <time class="tweet-timestamp" datetime="2015-05-17"><a target="new" href="http://twitter.com/DelimitedTech/status/600080688558149632"><span class="timesince" data-date="1431905359000">A week ago</span></a></time>
+        </div>
+      </li>
+    
+      <li class="tweet clear no-avatar " id="555581cbe4b049440ad262d1">
+        
+        <div class="tweet-text-wrapper">
+          
+            <div class="tweet-from"><a target="new" href="http://www.twitter.com/DelimitedTech/">Steve Hall</a></div>
+          
+          <div class="tweet-text">Alternative take on the spiral circle using a maple leaf texture.  <a href="http://t.co/DqZvlI61t3" rel="nofollow">http://t.co/DqZvlI61t3</a> <a href="https://twitter.com/#!/search?q=%23javascript" title="#javascript" class="tweet-url hashtag" rel="nofollow">#javascript</a> <a href="https://twitter.com/#!/search?q=%23d3js" title="#d3js" class="tweet-url hashtag" rel="nofollow">#d3js</a> <a href="https://twitter.com/#!/search?q=%23threejs" title="#threejs" class="tweet-url hashtag" rel="nofollow">#threejs</a> <a href="http://t.co/K5MOlkW1xT" rel="nofollow">http://t.co/K5MOlkW1xT</a></div>
+          <time class="tweet-timestamp" datetime="2015-05-14"><a target="new" href="http://twitter.com/DelimitedTech/status/599080543993532417"><span class="timesince" data-date="1431666906000">A week ago</span></a></time>
+        </div>
+      </li>
+    
+  </ul>
+
+
+
+  <script>Y.use('squarespace-follow-buttons', function(Y) { Y.on('domready', function() { Y.Squarespace.FollowButtonUtils.renderAll(); }); });</script><div class="squarespace-follow-button" data-username="DelimitedTech" id="yui_3_17_2_1_1432800330463_560"><div id="yui_3_17_2_1_1432800330463_590" class="yui3-widget sqs-follow-button"><div id="yui_3_17_2_1_1432800330463_592" class="sqs-follow-button-content"><iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/follow_button.50005fe33691ad15041f7199457ac3e0.en.html" class="twitter-follow-button twitter-follow-button" title="Twitter Follow Button" data-twttr-rendered="true" style="position: static; visibility: visible; width: 150px; height: 20px;"></iframe></div></div></div>
+
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-36647916bed6cdf05ab4"><div class="sqs-block-content"><h2>Blog Search</h2></div></div><div class="sqs-block search-block sqs-block-search" data-block-type="33" id="block-43c93d0a6aee690c8275"><div class="sqs-block-content"><div class="sqs-search-ui-text-input sqs-search-ui-button-wrapper color-dark" data-source="block" data-preview="false" data-collection="" boost_title="10" id="yui_3_17_2_1_1432800330463_392">
+  <div class="spinner-wrapper"></div>
+  <input type="search" class="search-input hover-effect" value="" placeholder="Search">
+<div id="yui_3_17_2_1_1432800330463_397" class="yui3-widget sqs-widget sqs-search-preview"><div id="yui_3_17_2_1_1432800330463_399" class="sqs-search-preview-content"></div></div></div></div></div><div class="sqs-block tagcloud-block sqs-block-tagcloud" data-block-type="14" id="block-885e4080006288ce6651"><div class="sqs-block-content"><ul class="sqs-tagcloud">
+	
+</ul>
+</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-d111883d4a94fe89251b"><div class="sqs-block-content"><h2>Filter by Tag</h2></div></div><div class="sqs-block postsbytag-block sqs-block-postsbytag" data-block-type="28" id="block-1001683d0ae4c70426f3"><div class="sqs-block-content"><ul>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=WebGL"><span class="name">WebGL</span> <span class="count"><span>(</span>1<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=data"><span class="name">data</span> <span class="count"><span>(</span>1<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=databases"><span class="name">databases</span> <span class="count"><span>(</span>1<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=graphs"><span class="name">graphs</span> <span class="count"><span>(</span>1<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=neo4j"><span class="name">neo4j</span> <span class="count"><span>(</span>1<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=Angular"><span class="name">Angular</span> <span class="count"><span>(</span>2<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=javascript"><span class="name">javascript</span> <span class="count"><span>(</span>2<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=maps"><span class="name">maps</span> <span class="count"><span>(</span>2<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=data+visualization"><span class="name">data visualization</span> <span class="count"><span>(</span>3<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=three.js"><span class="name">three.js</span> <span class="count"><span>(</span>5<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=svg"><span class="name">svg</span> <span class="count"><span>(</span>7<span>)</span></span></a></li>
+  
+    <li><a href="http://www.delimited.io/blog/?tag=d3"><span class="name">d3</span> <span class="count"><span>(</span>18<span>)</span></span></a></li>
+  
+</ul>
+</div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_3_1420320008260_18985"><div class="sqs-block-content"><script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- side-blog-2 -->
+<ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-5955077962119421" data-ad-slot="3229838594"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div></div></div></div></div></aside>
+    </section>
+
+    <div class="extra-wrapper page-footer">
+      <div class="sqs-layout sqs-grid-12 columns-12 empty" data-layout-label="Footer Content: Blog" data-type="block-field" id="page-footer-5273dca2e4b01beaee41a2c9"><div class="row sqs-row"><div class="col sqs-col-12 span-12"></div></div></div>
+    </div>
+
+    <div class="page-divider"></div>
+
+    <footer id="footer">
+      <div class="sqs-layout sqs-grid-1 columns-1" data-layout-label="Footer Content" data-type="block-field" data-updated-on="1396808241334" id="footerBlock"><div class="row sqs-row"><div class="col sqs-col-1 span-1"><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-a6e64ffbdffe3987a585"><div class="sqs-block-content"><p>© 2014 Delimited Technologies. All Rights Reserved.</p></div></div></div></div></div>
+      
+        
+        <div id="socialLinks" class="social-links" data-content-field="connected-accounts">
+          <a href="https://twitter.com/DelimitedTech" target="_blank" class="social-twitter"></a>
+        </div>
+        
+      
+    </footer>
+
+  </div>
+
+  <div></div>
+
+  <script type="text/javascript" src="./Snark Hunting_ Force Directed Graphs in D3 — delimited_files/saved_resource(10)"></script>
+  
+
+  <script type="text/javascript" data-sqs-type="imageloader-bootstraper">(function() {if(window.ImageLoader) { window.ImageLoader.bootstrap(); }})();</script>
+<script>Squarespace.afterBodyLoad(Y);</script><div class="absolute-cart-box"><div id="yui_3_17_2_1_1432800330463_501" class="yui3-widget sqs-widget sqs-pill-shopping-cart sqs-scalable-hidden" style="visibility: hidden; opacity: 0; transform: scale(0.94);"><div id="yui_3_17_2_1_1432800330463_503" class="sqs-pill-shopping-cart-content dark"><div class="icon"></div>
+
+<div class="details">
+  Cart&nbsp;-&nbsp;
+    <span class="total-quantity">0</span>
+    <span class="suffix">items</span>
+</div>
+
+<span class="subtotal">
+  <span class="price"><span class="sqs-money-native">0.00</span></span>
+</span></div></div></div>
+
+
+
+
+
+
+</body></html>

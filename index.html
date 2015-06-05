@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		
+		<title>Graphe ROSAM</title>
+		
+		<style type = "text/css">
+			html 
+			{ 
+				background-color: #000;
+				color: rgba(255,255,255, 0.5);
+			}
+			
+			a 
+			{
+				color: white;
+			}
+			 
+			#intro 
+			{
+				position: absolute;
+				top: 15px;
+				left: 15px;
+				background: transparent;
+			}
+			
+			.link 
+			{
+				stroke: #fff;
+				stroke-width: 3px;
+				stroke-opacity: .5;
+			}
+			
+			text 
+			{
+				fill: #fff;
+				font: 10px sans-serif;
+				pointer-events: none;
+			}
+			
+			p
+			{
+				font-size : 150%;
+				fill: #fff;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<script src="http://d3js.org/d3.v3.js"></script>
+		<script src="lib/dat.gui/dat.gui.min.js"></script>
+		<script src="js/graph.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>        
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" /> 
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>‌​
+		
+		<p>Cliquez sur un noeud pour afficher ses voisins</p>
+		<p>Double-cliquez sur un noeud pour le supprimer</p>
+		<p>Modifiez les paramètres du graphe avec la liste deroulante sur la droite</p>
+		
+		<div class="ui-widget">
+			<input id="search">
+			<button type="button" onclick="searchNode()">Chercher</button>
+			<button type="button" onclick="searchAllNodes()">Chercher toutes</button>
+		</div>
+		
+		<script>
+			//D3JS_X_minValues_export_2.csv
+			//D3JS_X_minValues_export.csv
+			d3.csv("D3JS_X_minValues_export.csv", function(error, data)
+			{
+				var config = new Config({
+					height: /*window.innerHeight*/2200,
+					width: /*window.innerWidth*/3000,
+					dataset: 'snark56',
+					gravity: 0.21,
+					charge: -400,
+					theta: 0.9,
+					friction: 0.9,
+					distance: 3,
+					strength: 0.9,
+					threshold_EMD: 300,
+					imageSize: 48,
+					nodeRadius: 10,
+					stop: false
+				});
+				
+				window.graph = new Graph(data, config);
+				graph.update();
+				graph.shake();
+				//window.addEventListener('resize', graph.onResize.bind(graph), true);
+			});
+			
+			
+			
+		</script>
+	</body>
+<html>
