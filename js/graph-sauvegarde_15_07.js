@@ -20,7 +20,6 @@ var Node = function(obj)
 {
 	this.id = obj.id;
 	this.name = obj.name;
-	this.depth = -1;
 };
 
 //****************************************************
@@ -33,7 +32,6 @@ var Link = function(obj)
 	this.source = obj.source;
 	this.target = obj.target;
 	this.emd = obj.emd;
-	this.skip = 0;
 };
 
 //******************************************************
@@ -362,295 +360,9 @@ Graph.prototype.setData = function (data)
 		}
 	}
 	
-	
-	this.evaluateClassificationUsingDepthInfo2();
-	
-	
 	this.store = this.getLinks();
 	this.nodesStore = this.getNodes();
 };
-
-Graph.prototype.evaluateClassification_links = function ()
-{
-	var nodes = this.getNodes();
-	var links = this.getLinks();
-	
-	var totalLinks = links.length;
-	var totalLinksOk = 0;
-	
-	//console.log(nodes[0]);		//name
-	//console.log(links[0]);		//source.name
-	
-	nodes.forEach(function (node)
-	{
-		links.forEach(function(link)
-		{
-			if(node.name == link.source.name)
-			{
-				var truncatedNodeName = node.name;
-				truncatedNodeName = truncatedNodeName.substring(0, truncatedNodeName.length - 8);		//enlève ' (x).jpg'
-				
-				var truncatedTargetName = link.target.name;
-				truncatedTargetName = truncatedTargetName.substring(0, truncatedTargetName.length - 8);
-				
-				if(truncatedNodeName == truncatedTargetName)
-					totalLinksOk += 1;
-			}
-		});
-	});
-	
-	var totalPercentsOk = 0;
-	totalPercentsOk = totalLinksOk * 100 / totalLinks;
-	
-	console.log("Pourcentage de liens corrects : ");
-	console.log(totalPercentsOk);
-	console.log("nombre de liens corrects : " + totalLinksOk + ", sur : " + totalLinks + " liens.");
-} 
-
-Graph.prototype.evaluateClassification_nodes = function ()
-{
-	var nodes = this.getNodes();
-	var links = this.getLinks();
-	
-	var totalNodes = nodes.length;
-	var totalNodesOk = 0;
-	
-	nodes.forEach(function(node)
-	{
-		var truncatedNodeNameToEvaluate = node.name;
-		truncatedNodeNameToEvaluate = truncatedNodeNameToEvaluate.substring(0, truncatedNodeNameToEvaluate.length - 8);
-			
-		var nodeArray = [];
-		
-		var max = 0;
-		var nodeClass = "";
-		
-		links.forEach(function(link)
-		{
-			if(node.name == link.source.name)	//Liens directs du noeud à évaluer
-			{
-				var truncatedTargetName = link.target.name;
-				truncatedTargetName = truncatedTargetName.substring(0, truncatedTargetName.length - 8);
-				
-				nodeArray[truncatedTargetName] += 1;
-				
-				if(nodeArray[truncatedTargetName] > max)
-				{
-					max = nodeArray[truncatedTargetName];
-					nodeClass = truncatedTargetName;
-				}
-			}
-		});
-		
-		if(truncatedNodeNameToEvaluate == nodeClass)
-			totalNodesOk++;
-	});
-	
-	var percentOk = totalNodesOk * 100 / totalNodes;
-	
-	console.log("Sur " + totalNodes + " noeuds :");
-	console.log(totalNodesOk+ " noeuds sont corrects, soit " + percentOk + " %");
-}
-
-Graph.prototype.evaluateClassificationUsingDepthInfo = function ()
-{
-	var maxDepth = 1;
-	var nodes = this.getNodes();
-	var links = this.getLinks();
-	
-	var totalNodes = nodes.length;
-	var totalCorrectNodes = 0;
-	
-	var unprocessedLinks = [];										//Contient tous les liens à partir d'un noeud clé, dont la profondeur est inférieure à un chiffre donnée
-	var processedLinks = [];
-	
-	nodes.forEach(function(node)
-	{
-		//Etape 1 : chercher le premier niveau de profondeur à partir d'un noeud clé
-		node.depth = 1;												//Récupère le noeud clé
-		//nodes[0].depth = 1;
-		
-		links.forEach(function(link)								//Cherche les liens de ce noeud
-		{
-			if(node.name == link.source.name)						//Si un lien trouvé :
-			//if(nodes[0].name == link.source.name)
-			{
-				if(link.target.depth == -1)							//Si une profondeur n'est pas définie :
-					link.target.depth = link.source.depth + 1;		//Définir depth noeud cible = depth noeud source
-				
-				unprocessedLinks.push(link);						//On ajoute les liens trouvés au tableau de liens non traités
-			}
-		});
-		
-		//Etape 2 : chercher tous les autres niveaux de profondeur jusqu'à maxDepth
-		while(unprocessedLinks.length != 0)							//Tant que le tableau de lien non traités n'est pas vide :
-		{
-			links.forEach(function(link)
-			{
-				if(unprocessedLinks[0].target.name == link.source.name)//Chercher les liens à partir du noeud de la profondeur suivante
-				{
-					if(link.target.depth == -1)
-						link.target.depth = unprocessedLinks[0].target.depth + 1;
-					
-					if(link.target.depth <= maxDepth)
-						unprocessedLinks.push(link);
-				}
-			});
-			
-			//Remove first element of array : shift(), last : pop()
-			processedLinks.push(unprocessedLinks[0]);
-			unprocessedLinks.shift();
-		}
-		
-		
-		var testLien = -1;
-		var nodeIsCorrectlyClassified = false;
-		
-		var truncatedNodeName = node.name;
-		truncatedNodeName = truncatedNodeName.substring(0, truncatedNodeName.length - 8);
-		
-		for(var i = 0 ; i < processedLinks.length ; i++)
-		{
-			var truncatedTargetName = processedLinks[i].target.name;
-			truncatedTargetName = truncatedTargetName.substring(0, truncatedTargetName.length - 8);
-			
-			if(truncatedNodeName == truncatedTargetName)
-			{
-				testLien = i;
-				nodeIsCorrectlyClassified = true;
-				break;
-			}
-		}
-		
-		if(nodeIsCorrectlyClassified)
-			totalCorrectNodes++;
-		
-		if(processedLinks[testLien] != undefined)
-		{
-			console.log("Nombre de noeuds bien classes : " + totalCorrectNodes);
-			console.log("---");
-			console.log("Noeud source : " + node.name);
-			console.log("Lien correct : " + processedLinks[testLien].source.name + " ___ " + processedLinks[testLien].target.name);
-			console.log("profondeur : " + processedLinks[testLien].source.depth + " ___ " + processedLinks[testLien].target.depth);
-			console.log("---");
-		}
-		
-		nodes.forEach(function(n)
-		{
-			n.depth = -1;
-		});
-		
-		links.forEach(function(l)
-		{
-			l.inProcess = 0;
-		});
-	});
-}
-
-
-
-
-Graph.prototype.evaluateClassificationUsingDepthInfo2 = function ()
-{
-	var maxDepth = 1;
-	var nodes = this.getNodes();
-	var links = this.getLinks();
-	
-	var totalNodes = nodes.length;
-	var totalCorrectNodes = 0;
-	
-	var unprocessedLinks = [];										//Contient tous les liens à partir d'un noeud clé, dont la profondeur est inférieure à un chiffre donnée
-	var processedLinks = [];
-	
-	//nodes.forEach(function(node)
-	//{
-		//Etape 1 : chercher le premier niveau de profondeur à partir d'un noeud clé
-		nodes[0].depth = 1;												//Récupère le noeud clé
-		//nodes[0].depth = 1;
-		
-		links.forEach(function(link)								//Cherche les liens de ce noeud
-		{
-			if(nodes[0].name == link.source.name)						//Si un lien trouvé :
-			//if(nodes[0].name == link.source.name)
-			{
-				if(link.target.depth == -1)							//Si une profondeur n'est pas définie :
-					link.target.depth = link.source.depth + 1;		//Définir depth noeud cible = depth noeud source
-				
-				unprocessedLinks.push(link);						//On ajoute les liens trouvés au tableau de liens non traités
-				link.skip = 1;
-			}
-		});
-		
-		//Etape 2 : chercher tous les autres niveaux de profondeur jusqu'à maxDepth
-		while(unprocessedLinks.length != 0)							//Tant que le tableau de lien non traités n'est pas vide :
-		{
-			links.forEach(function(link)
-			{
-				if(link.skip != 1)
-				{
-					if(unprocessedLinks[0].target.name == link.source.name)//Chercher les liens à partir du noeud de la profondeur suivante
-					{
-						if(link.target.depth == -1)
-							link.target.depth = unprocessedLinks[0].target.depth + 1;
-						
-						if(link.target.depth <= maxDepth)
-						{
-							link.skip = 1;
-							unprocessedLinks.push(link);
-						}
-					}
-				}
-			});
-			
-			//Remove first element of array : shift(), last : pop()
-			processedLinks.push(unprocessedLinks[0]);
-			unprocessedLinks.shift();
-		}
-		
-		
-		var testLien = -1;
-		var nodeIsCorrectlyClassified = false;
-		
-		var truncatedNodeName = nodes[0].name;
-		truncatedNodeName = truncatedNodeName.substring(0, truncatedNodeName.length - 8);
-		
-		for(var i = 0 ; i < processedLinks.length ; i++)
-		{
-			var truncatedTargetName = processedLinks[i].target.name;
-			truncatedTargetName = truncatedTargetName.substring(0, truncatedTargetName.length - 8);
-			
-			if(truncatedNodeName == truncatedTargetName)
-			{
-				testLien = i;
-				nodeIsCorrectlyClassified = true;
-				break;
-			}
-		}
-		
-		if(nodeIsCorrectlyClassified)
-			totalCorrectNodes++;
-		
-		if(processedLinks[testLien] != undefined)
-		{
-			console.log("Nombre de noeuds bien classes : " + totalCorrectNodes);
-			console.log("---");
-			console.log("Noeud source : " + nodes[0].name);
-			console.log("Lien correct : " + processedLinks[testLien].source.name + " ___ " + processedLinks[testLien].target.name);
-			console.log("profondeur : " + processedLinks[testLien].source.depth + " ___ " + processedLinks[testLien].target.depth);
-			console.log("---");
-		}
-		
-		nodes.forEach(function(n)
-		{
-			n.depth = -1;
-		});
-		
-		links.forEach(function(l)
-		{
-			l.inProcess = 0;
-		});
-	//});
-}
 
 //******************************************
 // "SHAKES" GRAPH OUT TO MINIMIZE TANGLES
@@ -892,7 +604,7 @@ Graph.prototype.update = function()
 		return d.weight == 0;
 	});
 	
-	//console.log(nodesWithoutLinks);
+	console.log(nodesWithoutLinks);
 	
 	//nodesWithoutLinks.style("opacity", 0);
 	
@@ -989,7 +701,7 @@ Graph.prototype.update = function()
 			link.style("opacity", function (o) {
 				return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
 			});
-			//Reduce the opacity
+			//Reduce the op
 			toggle = 1;
 		} 
 		else 
